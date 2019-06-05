@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue</title>
+</head>
+<body>
+    <div id="app">
+        <gato></gato>
+        <gato></gato>
+        <gato></gato>
+        <gato></gato>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script>
+        Vue.component('gato', {
+            template: `<img :src="urlCompleta">`,
+            data() {
+                return {
+                    ancho: Math.floor(Math.random() * 600) + 100,
+                    alto: Math.floor(Math.random() * 600) + 100,
+                }
+            },
+            computed: {
+                urlCompleta() {
+                    return `https://placekitten.com/${this.ancho}/${this.alto}`
+                }
+            }
+        });
+
+        new Vue({
+            el: "#app",
+        });
+
+        Vue.config.devtools = true;
+    </script>
+</body>
+</html>
