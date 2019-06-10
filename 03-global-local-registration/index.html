@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue</title>
+    <style>
+        .boton {
+            background-color: purple;
+            color: white;
+            padding: 10px 30px;
+            display: block;
+            border-radius: 0 0 10px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 1px goldenrod;
+            font-family: sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <destino></destino>
+        <boton color="blue" enlace="https://www.wmedia.es" anchor-text="Wmedia"></boton>
+        <boton color="purple" enlace="https://www.escuelavue.es" anchor-text="Escuela Vue"></boton>
+        <boton color="green" enlace="https://www.vuejs.org" anchor-text="Vuejs"></boton>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script>
+        const destino = {
+            template: `<span>Destino</span>`,
+        };
+
+        const boton = {
+            props: ["color", "enlace", "anchorText"],
+            //template: `<a class="boton" :style="'background-color:' + color" :href="enlace">{{ anchorText }}</a>`,
+            template: `<a class="boton" :style="'background-color:' + color" :href="enlace"><destino></destino></a>`,
+            components: {
+                destino
+            }
+        };
+
+        new Vue({
+            el: "#app",
+            data: {},
+            components: {
+                destino,
+                boton,
+            }
+        });
+        
+        Vue.config.devtools = true;
+    </script>
+</body>
+</html>
