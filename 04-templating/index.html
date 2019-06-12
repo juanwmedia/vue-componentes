@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue</title>
+    <style>
+        .pizza {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            font-family: sans-serif;
+            border: 1px solid gray;
+            border-radius: 25px;
+            box-sizing: border-box;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .pizza__nombre {
+            flex-basis: 50%;
+            margin: 0 0 20px 0;
+        }
+
+        .pizza__imagen {
+            flex-basis: 100%;
+            align-self: center;
+            flex-grow: 0;
+            flex-shrink: 0;
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <pizza
+            v-for="pizza in pizzas"
+            :nombre="pizza.nombre"
+            :imagen="pizza.imagen"
+            :cantidad="pizza.cantidad"
+        ></pizza>
+
+        <!-- <article v-for="(pizza, $index) in pizzas" class="pizza">
+            <h2 class="pizza__nombre">{{ pizza.nombre }}</h2>
+            <section class="pizza__cantidad">
+                <button @click="masPizza($index)">+</button>
+                {{ pizza.cantidad }}
+                <button @click="menosPizza($index)">-</button>
+            </section>
+            <img :src="pizza.imagen" alt="Pizza" class="pizza__imagen">
+        </article> -->
+    </div>
+
+    <script type="text/x-template" id="pizza-template">
+        <article class="pizza">
+            <h2 class="pizza__nombre">{{ nombre }}</h2>
+            <section class="pizza__cantidad">
+                <button @click="masPizza">+</button>
+                {{ cantidad }}
+                <button @click="menosPizza">-</button>
+            </section>
+            <img :src="imagen" alt="Pizza" class="pizza__imagen">
+        </article>
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    
+    <script>
+        const pizza = {
+            props: ["nombre", "imagen", "cantidad"],
+            template: "#pizza-template",
+            methods: {
+                masPizza() {
+                    this.cantidad++;
+                },
+                menosPizza() {
+                    this.cantidad > 0 && this.cantidad--;
+                }
+            }
+        };
+
+        new Vue({
+            el: "#app",
+            data: {
+                pizzas: [
+                    { 
+                        nombre: "Pizza de carne", 
+                        imagen: "https://cocina-casera.com/wp-content/uploads/2011/12/pizaa-carne-receta.jpg", 
+                        cantidad: 0 
+                    },
+                    { 
+                        nombre: "Mini Pizza", 
+                        imagen: "https://i.ytimg.com/vi/4wg09Xms_wo/sddefault.jpg", 
+                        cantidad: 0 
+                    },
+                    { 
+                        nombre: "Pizza Pepperoni", 
+                        imagen: "https://placeralplato.com/files/2016/01/Pizza-con-pepperoni-640x480.jpg", 
+                        cantidad: 0 
+                    },
+                ]
+            },
+            components: {
+                pizza,
+            }
+        });
+        Vue.config.devtools = true;
+    </script>
+
+</body>
+</html>
