@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue</title>
+    <style>
+        .usuarios {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .usuario {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <article class="usuarios">
+            <section class="disponibles">
+                <h1>Usuarios disponibles {{ usuariosDisponibles.length }}</h1>
+                <usuarios :listado="usuariosDisponibles" mover-a="usuariosSeleccionados"></usuarios>
+                <!-- <usuario v-for="usuario in usuariosDisponibles" :info="usuario"></usuario> -->
+            </section>
+
+            <section class="seleccionados">
+                <h1>Usuarios seleccionados {{ usuariosSeleccionados.length }}</h1>
+                <usuarios :listado="usuariosSeleccionados" mover-a="usuariosDisponibles"></usuarios>
+            </section>
+        </article>
+
+        <hr>
+
+        <pre>{{ $data }}</pre>
+    </div>
+
+    <script type="text/x-template" id="usuario-template">
+        <article class="usuario" @click="modificarSeleccion">
+            <img :src="info.picture.large" :alt="info.nombre">
+            <h1 class="usuario__nombre">{{ nombreCompleto }}</h1>
+            <a :href="info.email">{{ info.email }}</a>
+            <p>{{ info.username }}</p>
+        </article> 
+    </script>
+
+    <script type="text/x-template" id="usuarios-template">
+        <section>
+            <usuario 
+                @seleccion="alterarSeleccion"
+                v-for="usuario in listado" 
+                :info="usuario">
+            </usuario>
+        </section>
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+    <script>
+        // Usuario individual
+        const usuario = {
+            props: ["info"],
+            template: "#usuario-template",
+            computed: {
+                nombreCompleto() {
+                    return `${this.info.name.title}: ${this.info.name.first} ${this.info.name.last}`;
+                }
+            },
+            methods: {
+                modificarSeleccion() {
+                    this.$emit('seleccion', this.info.username);
+                }
+            }
+        };
+
+        // Wrapper de usuarios
+        const usuarios = {
+            props: ['listado', 'moverA'],
+            template: '#usuarios-template',
+            methods: {
+                alterarSeleccion(username) {
+                    var indice = this.listado.findIndex(elemento => {
+                        return elemento.username === username;
+                    });
+
+                    if (indice > -1) {
+                        this.$root[this.moverA].unshift(this.listado.splice(indice, 1)[0]);
+                    }
+                }
+            },
+            components: {
+                usuario,
+            }
+        }
+
+
+        const vm = new Vue({
+            created() {
+                fetch('https://randomuser.me/api/?results=50')
+                    .then(respuesta => respuesta.json())
+                    .then(respuesta => this.usuariosDisponibles = respuesta.results.map(usuario => {
+                        return {
+                            username: usuario.login.username,
+                            name: usuario.name,
+                            email: usuario.email,
+                            picture: usuario.picture,
+                        }
+                    }));
+            },
+            el: "#app",
+            data: {
+                usuariosDisponibles: [],
+                usuariosSeleccionados: [],
+            },
+            components: {
+                usuarios,
+            }
+        });
+        Vue.config.devtools = true;
+    </script>
+
+</body> 
+
+</html>
