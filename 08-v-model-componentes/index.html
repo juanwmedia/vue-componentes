@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue</title>
+</head>
+<body>
+<div id="app">
+    <!--<input v-model="busqueda" type="text">-->
+
+    <base-input v-model="busqueda">
+        Búsqueda
+    </base-input>
+
+    <base-input v-model="nombre">
+        Nombre
+    </base-input>
+
+    <base-input v-model="correoe">
+        Correo-e
+    </base-input>
+
+<!--    <input v-bind:value="busqueda"
+           v-on:input="busqueda = $event.target.value"
+           type="text">-->
+
+    <pre>{{ $data }}</pre>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+<script>
+    Vue.component('base-input', {
+        props: ['value'],
+        template: `
+        <div style="margin-bottom: 20px;">
+            <label style="display: block;" :for="id">
+                <slot></slot>
+            </label>
+            <input
+                v-bind:value="value"
+                v-on:input="$emit('input', $event.target.value)"
+                type="text" :id="id">
+        </div>
+       `,
+        data() {
+           return {
+               id: `input-${Math.floor(Math.random() * 10) + 1}`
+           }
+        }
+    });
+
+    new Vue({
+        el: "#app",
+        data: {
+            busqueda: "",
+            nombre: "",
+            correoe: "",
+        }
+    });
+
+    Vue.config.devtools = true;
+</script>
+</body>
+</html>
