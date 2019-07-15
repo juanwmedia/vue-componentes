@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue</title>
+    <style>
+        li {
+            cursor: pointer;
+        }
+        .activa {
+            color: white;
+            background: gray;
+            padding: 3px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <button v-for="tab in tabs" @click="actual = tab">
+        {{ tab | capitalizar }}
+    </button>
+    <component :is="tareasSeleccionadas" :tareas="tareas"></component>
+
+<!--    <tareas-todas :tareas="tareas"></tareas-todas>
+    <tareas-urgentes :tareas="tareas"></tareas-urgentes>
+    <tareas-finalizadas :tareas="tareas"></tareas-finalizadas>-->
+    <hr>
+    <pre>{{ $data }}</pre>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+<script>
+    Vue.component('tareas-todas', {
+        props: ['tareas'],
+        template: `
+            <div>
+                <h3>Todas</h3>
+                <ul>
+                    <li
+                        v-for="tarea in tareas">
+                        {{ tarea.titulo }}
+                    </li>
+                </ul>
+            </div>
+        `,
+    });
+
+    Vue.component('tareas-urgentes', {
+        props: ['tareas'],
+        template: `
+            <div>
+                <h3>Urgentes</h3>
+                <ul>
+                    <li
+                        v-for="tarea in tareasAmostrar">
+                        {{ tarea.titulo }}
+                    </li>
+                </ul>
+            </div>
+        `,
+        computed: {
+            tareasAmostrar() {
+                return this.tareas.sort((a, b) => b.prioridad - a.prioridad);
+            }
+        }
+    });
+
+    Vue.component('tareas-finalizadas', {
+        props: ['tareas'],
+        template: `
+            <div>
+                <h3>Finalizadas</h3>
+                <ul>
+                    <li
+                        v-for="tarea in tareasAmostrar">
+                        {{ tarea.titulo }}
+                    </li>
+                </ul>
+            </div>
+        `,
+        computed: {
+            tareasAmostrar() {
+                return this.tareas.filter(tarea => tarea.completado === true);
+            }
+        }
+    });
+
+    const vm = new Vue({
+        el: "#app",
+        data: {
+            tabs: ['todas', 'urgentes', 'finalizadas'],
+            actual: ['todas'],
+            tareas: [
+                {
+                    titulo: 'Preparar la serie de Nuxt',
+                    prioridad: 6,
+                    completado: false,
+                },
+                {
+                    titulo: 'Producir la serie de Vue-cli',
+                    prioridad: 7,
+                    completado: false,
+                },
+                {
+                    titulo: 'Finalizar la serie de Componentes',
+                    prioridad: 8,
+                    completado: false,
+                },
+                {
+                    titulo: 'Desarrollar la nueva Web de Escuela Vue',
+                    prioridad: 9,
+                    completado: false,
+                },
+                {
+                    titulo: 'Finalizar la serie Vue Esencial',
+                    prioridad: 7,
+                    completado: true,
+                },
+            ]
+        },
+        computed: {
+            tareasSeleccionadas() {
+                return `tareas-${this.actual}`;
+            }
+        },
+        filters: {
+            capitalizar(contenido) {
+                return contenido.substring(0, 1).toUpperCase() + contenido.substring(1, contenido.length);
+            }
+        }
+    });
+
+    Vue.config.devtools = true;
+</script>
+</body>
+</html>
